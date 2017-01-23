@@ -29,6 +29,11 @@ namespace ListTutorial
         }
 
 
+        void Handle_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            listView.ItemsSource = GetContacts(e.NewTextValue);
+        }
+
         void Handle_Refreshing(object sender , EventArgs e)
         {
             listView.ItemsSource = GetContacts();
@@ -37,13 +42,20 @@ namespace ListTutorial
         }
 
 
-        ObservableCollection<Contact> GetContacts()
+        IEnumerable<Contact> GetContacts(string searchText = null)
         {
-           return new ObservableCollection<Contact>
+           var contacts =  new ObservableCollection<Contact>
            {
                 new Contact { Name = "Reyan", Status = "Road to 4k MMR" },
                 new Contact { Name = "Bob", Status = "Road to 2k MMR" }
            };
+
+            if (String.IsNullOrWhiteSpace(searchText))
+                return contacts;
+
+            return contacts.Where(c => c.Name.StartsWith(searchText));
+
+
         }
     }
 }
